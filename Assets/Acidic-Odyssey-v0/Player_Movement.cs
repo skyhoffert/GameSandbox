@@ -12,7 +12,7 @@ public class Player_Movement : MonoBehaviour
     private Vector3 velocity;
     private float accel = 2f;
     private bool is_grounded = false;
-    private float jump_velocity = 1.5f;
+    private float jump_velocity = 4f;
     private float jump_cooldown = 0f;
 
     private string debuglog = "";
@@ -70,7 +70,7 @@ public class Player_Movement : MonoBehaviour
         this.debugtimer -= Time.deltaTime;
         if (this.debugtimer <= 0) {
             this.debugtimer = this.debugtimermax;
-            Debug.Log(this.debuglog);
+            //Debug.Log(this.debuglog);
             this.debuglog = "";
         }
 

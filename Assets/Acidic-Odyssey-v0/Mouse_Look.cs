@@ -13,6 +13,7 @@ public class Mouse_Look : MonoBehaviour
 
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
+        this.playerTransform.Rotate(Vector3.zero);
     }
 
     void Update() {
