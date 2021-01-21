@@ -6,8 +6,8 @@ public class Mouse_Look : MonoBehaviour
 {
     public Transform playerTransform;
 
-    private float mouse_sense_horizont = 400f;
-    private float mouse_sense_vertical = 300f;
+    private float mouse_sense_horizont = 200f;
+    private float mouse_sense_vertical = 100f;
 
     private float xRotation = 0f;
 
