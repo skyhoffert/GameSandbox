@@ -16,8 +16,33 @@ public class Buoyant : MonoBehaviour
     public float force_mult_1 = 1.6f;
     public GameObject[] buoyant_objs;
 
+    // These variables are used for buoyant_objs caching.
+    private float[] radii;
+    private float[] volumes;
+
+    // Converts a linear percentage (between top and bottom) to factor that can be multiplied by
+    // volume to approximate volume below surface.
+    // @param pc: linear percentage of sphere that is submerged
+    // @return float: "sinusoidal" percentage of submerged volume approximating a sphere.
+    private float VolumePCFromLinearPC(float pc) {
+        if (pc > 0) {
+            if (pc < 1) {
+                return (Mathf.Sin(-Mathf.PI/2 + pc*Mathf.PI) + 1)/2;
+            }
+            return 1 + (pc - 1)/2f;
+        }
+        return 0;
+    }
+
     void Start() {
         this.rb = GetComponent<Rigidbody>();
+
+        this.radii = new float[this.buoyant_objs.Length];
+        this.volumes = new float[this.buoyant_objs.Length];
+        for (int i = 0; i < this.buoyant_objs.Length; ++i) {
+            this.radii[i] = this.buoyant_objs[i].GetComponent<Buoyant_Point>().radius;
+            this.volumes[i] = 4/3 * Mathf.PI * Mathf.Pow(this.radii[i],3);
+        }
     }
 
     void Update() {
@@ -37,51 +62,21 @@ public class Buoyant : MonoBehaviour
         } else if (this.buoyant_mode == 1) {
             for (int i = 0; i < this.buoyant_objs.Length; ++i) {
                 Vector3 center = this.buoyant_objs[i].transform.position;
-                float radius = this.buoyant_objs[i].GetComponent<Buoyant_Point>().radius;
+                float radius = this.radii[i];
                 Vector3 end = center + Vector3.up * radius;
                 Debug.DrawLine(center, end, Color.white);
 
-                float d = this.water_level - center.y;
-                float volume = 4/3 * Mathf.PI * Mathf.Pow(radius,3);
+                float top = center.y + radius;
+                float bottom = center.y - radius;
+                float pc = (this.water_level - bottom) / (top - bottom);
+                float vpc = VolumePCFromLinearPC(pc);
+                float volume = this.volumes[i];
+                float submerged_volume = volume * vpc;
 
-                // Case 1: fully submerged (d > r && d >= 0)
-                // Case 2: mostly submerged (d < r && d >= 0)
-                // Case 3: slightly submerged (d > -r && d < 0)
-                // Case 4: airborne (d < -r && d < 0)
-
-                float submerged_volume = 0;
-                Color color = Color.white;
-                if (d >= 0) {
-                    if (d > radius) { // fully submerged
-                        submerged_volume = volume; // TODO: consider depth?
-                        color = Color.blue;
-
-                        // TODO: why is correction factor needed??
-                        // submerged_volume += 66*radius/4;
-                    } else { // mostly submerged
-                        float h = radius - d;
-                        float cap = Mathf.PI * Mathf.Pow(h,2) / 3 * (3*radius - h);
-                        submerged_volume = volume - cap;
-                        color = Color.red;
-                        // Debug.Log("red,cap=" + cap);
-
-                        // TODO: why is correction factor needed??
-                        // submerged_volume += 66*radius/4;
-                    }
-                } else { // d < 0
-                    if (d > -radius) { // slightly submerged
-                        float h = radius + d;
-                        submerged_volume = Mathf.PI * Mathf.Pow(h,2) / 3 * (3*radius - h);
-                        color = Color.green;
-                        // Debug.Log("green,cap=" + submerged_volume);
-                    } else { // Nothing. Airborne.
-                    }
-                }
-                
                 Vector3 fv = new Vector3(0f, submerged_volume * this.force_mult_1, 0f);
                 rb.AddForceAtPosition(fv, center, ForceMode.Force);
 
-                Debug.DrawLine(center, center + Vector3.up * submerged_volume, color);
+                // Debug.DrawLine(center, center + Vector3.up * submerged_volume/10f, Color.blue);
 
                 // TODO: ideally here, drag would be calculated
             }
