@@ -12,7 +12,7 @@ public class Buoyant : MonoBehaviour
 
     public float force_mult_0 = 60f;
     public Transform[] buoyant_pts;
-    
+
     public float force_mult_1 = 1.6f;
     public GameObject[] buoyant_objs;
 
@@ -57,7 +57,7 @@ public class Buoyant : MonoBehaviour
                         color = Color.blue;
 
                         // TODO: why is correction factor needed??
-                        submerged_volume += 66;
+                        // submerged_volume += 66*radius/4;
                     } else { // mostly submerged
                         float h = radius - d;
                         float cap = Mathf.PI * Mathf.Pow(h,2) / 3 * (3*radius - h);
@@ -66,7 +66,7 @@ public class Buoyant : MonoBehaviour
                         // Debug.Log("red,cap=" + cap);
 
                         // TODO: why is correction factor needed??
-                        submerged_volume += 66;
+                        // submerged_volume += 66*radius/4;
                     }
                 } else { // d < 0
                     if (d > -radius) { // slightly submerged
@@ -82,6 +82,8 @@ public class Buoyant : MonoBehaviour
                 rb.AddForceAtPosition(fv, center, ForceMode.Force);
 
                 Debug.DrawLine(center, center + Vector3.up * submerged_volume, color);
+
+                // TODO: ideally here, drag would be calculated
             }
         }
     }
