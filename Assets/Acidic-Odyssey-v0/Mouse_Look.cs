@@ -13,7 +13,6 @@ public class Mouse_Look : MonoBehaviour
 
     void Start() {
         Cursor.lockState = CursorLockMode.Locked;
-        this.playerTransform.localRotation = Quaternion.identity;
     }
 
     void Update() {

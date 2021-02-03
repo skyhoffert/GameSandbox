@@ -6,14 +6,14 @@ public class Player_Movement : MonoBehaviour
 {
     public Transform feet;
 
-    private float ground_speed = 40f;
-    private float air_speed = 20f;
+    private float ground_speed = 10000f;
+    private float air_speed = 8000f;
     private float ground_dist = 0.3f;
 
     private bool is_grounded = false; // Calculated with raycast.
     private bool is_airborne = false; // Set by this code.
 
-    private float jump_velocity = 8f;
+    private float jump_velocity = 10f;
     private float jump_cd_max = 0.15f;
     private float jump_cd = 0f;
     private float jump_air_cd_max = 0.1f; // time after leaving platform to jump
@@ -34,7 +34,7 @@ public class Player_Movement : MonoBehaviour
     }
 
     void Start() {
-        phys_mask.value = ~(1 << 2);
+        phys_mask.value = ~((1 << 2) | (1 << 4));
 
         this.rb = GetComponent<Rigidbody>();
     }
@@ -83,7 +83,7 @@ public class Player_Movement : MonoBehaviour
         } else {
             spd = this.air_speed;
         }
-        rb.AddForce(move * spd);
+        rb.AddForce(move * spd * Time.deltaTime);
 
         // DEBUG
         this.debugtimer -= Time.deltaTime;

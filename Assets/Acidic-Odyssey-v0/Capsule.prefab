@@ -160,7 +160,7 @@ MonoBehaviour:
   buoyant_pts:
   - {fileID: 3698056169137401245}
   - {fileID: 3698056170405066633}
-  force_mult_1: 1.7
+  force_mult_1: 1.5
   buoyant_objs:
   - {fileID: 3698056169137401242}
   - {fileID: 3698056170405066678}
