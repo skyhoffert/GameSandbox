@@ -74,7 +74,7 @@ public class Buoyant : MonoBehaviour
                 float submerged_volume = volume * vpc;
 
                 Vector3 fv = new Vector3(0f, submerged_volume * this.force_mult_1, 0f);
-                rb.AddForceAtPosition(fv, center, ForceMode.Force);
+                rb.AddForceAtPosition(fv * 200f * Time.deltaTime, center, ForceMode.Force);
 
                 // Debug.DrawLine(center, center + Vector3.up * submerged_volume/10f, Color.blue);
 
