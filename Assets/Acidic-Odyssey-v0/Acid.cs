@@ -15,7 +15,8 @@ public class Acid : MonoBehaviour
 
     void Update() {
         if (this.triggered && this.sizzle.isPlaying == false) {
-            SceneManager.LoadScene("Acidic-Odyssey-v0");
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(scene.name);
         }
     }
 
