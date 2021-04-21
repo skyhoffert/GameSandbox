@@ -6,6 +6,11 @@ public class Buoyant : MonoBehaviour
 {
     public float water_level;
 
+    //CHANGE FROM ARTHUR 4/21/21
+    //Adding a tag for "fake" objects, that is, objects that sink when landing on them.
+    public bool isFake = false;
+    //End of Change
+
     private Rigidbody rb;
 
     public int buoyant_mode = 1; // 0=pts, 1=objs
@@ -33,6 +38,16 @@ public class Buoyant : MonoBehaviour
         }
         return 0;
     }
+
+    //CHANGE FROM ARTHUR 4/21/21
+    //If an object is marked as fake, disables the buoyancy script on an object if anything touches it.
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (this.isFake == true){
+            this.GetComponent<Buoyant>().enabled = false;
+        }
+    }
+    //End of Change
 
     void Start() {
         this.rb = GetComponent<Rigidbody>();
